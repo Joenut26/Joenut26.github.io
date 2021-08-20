@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="us">
+<head>
+    <meta charset="utf-8">
+    <title>Plauti B.V Fifa Ranking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;1,400&display=swap"
+          rel="stylesheet">
+    <script src="js/script.js"></script>
+    <style>
+        body {
+            background-color: #cccccc;
+            }
+
+        body {
+            background-image: url("images/background.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            }
+    </style>
+
+</head>
+<body>
+<div id="nav-container">
+    <img id="fifa-image" src="images/fifaBanner.svg"/>
+    <ul id="nav-bar">
+        <li class="nav-item"><a href="fifaPlauti/Home">Home</a></li>
+        <li class="nav-item"><a href="fifaPlauti/gameForm">Enter Score</a></li>
+        <li class="nav-item"><a href="#">Search Game</a></li>
+        <li class="nav-item"><a href="#">Ranking</a></li>
+    </ul>
+</div>
+<div id="body-container">
+    <div id="input-container">
+        <div class="input-row">
+            <label class="label" for="player1">Player 1:</label>
+            <input class="input" type="text" id="player1">
+            <label class="label" for="team1">Team Name:</label>
+            <input class="input" type="text" id="team1">
+            <label class="label" for="goals1">Goals:</label>
+            <input class="input number" type="text" id="goals1">
+            <label class="label" for="rank1">Team Ranking:</label>
+            <input class="input number" type="text" id="rank1">
+        </div>
+        <div class="input-row">
+            <label class="label" for="player2">Player 2:</label>
+            <input class="input" type="text" id="player2">
+            <label class="label" for="team2">Team Name:</label>
+            <input class="input" type="text" id="team2">
+            <label class="label" for="goals2">Goals:</label>
+            <input class="input number" type="text" id="goals2">
+            <label class="label" for="rank2">Team Ranking:</label>
+            <input class="input number" type="text" id="rank2">
+        </div>
+        <div class="input-row">
+            <button class="button1" onclick="submit()">Submit</button>
+        </div>
+    </div>
+    <div id="padder">
+
+    </div>
+</div>
+</body>
+</html>
