@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping(path = "https://joenut26.github.io/fifaApp/")
+@RequestMapping(path = "/fifaApp")
 public class FifaController {
 
 
