@@ -63,7 +63,7 @@
 	<distributionManagement>
 		<site>
 			<id>github</id>
-			<url>scm:git:git@github.com:joenut26/fifaApp.git</url>
+			<url>scm:git:git@github.com:Joenut26/fifaApp.git</url>
 		</site>
 	</distributionManagement>
 
