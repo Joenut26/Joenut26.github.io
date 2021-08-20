@@ -1,5 +1,6 @@
 const httpRequest = new XMLHttpRequest();
-const url = "http://localhost:8080/fifaPlauti";
+//const url = "http://localhost:8080/fifaPlauti";
+const url = "https://joenut26.github.io/fifaApp/"
 
 let teams = [];
 
