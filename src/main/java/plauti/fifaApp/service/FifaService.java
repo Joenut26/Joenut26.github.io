@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import plauti.fifaApp.model.Game;
 import plauti.fifaApp.model.Team;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -17,7 +18,12 @@ public class FifaService {
         Game game = new Game();
         game.setTeamOne(teamOne);
         game.setTeamTwo(teamTwo);
-        game.setDate(Calendar.getInstance().getTime());
+        game.setDate(LocalDate.now());
+
+        //update player stats
+        //log game
+        //update ranking
+
 
         return game;
 

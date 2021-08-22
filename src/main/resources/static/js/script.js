@@ -1,6 +1,6 @@
 const httpRequest = new XMLHttpRequest();
-//const url = "http://localhost:8080/fifaPlauti";
-const url = "https://joenut26.github.io/fifaApp/"
+const url = "http://localhost:8080/fifaPlauti";
+//const url = "https://joenut26.github.io/fifaApp/"
 
 let teams = [];
 
@@ -20,6 +20,12 @@ function submit(){
     httpRequest.send(JSON.stringify(input));
 }
 
+function reset(){
+
+    let inputFields = Array.from(document.getElementsByClassName("input"));
+    inputFields.forEach(input => input.value = "");
+}
+
 function getInput(){
 
     let playerOne = document.getElementById("player1").value;
@@ -35,17 +41,25 @@ function getInput(){
     input["teamOne"] = {rank: rankingOne, name: teamOne, goals: goalsOne, player: {name: playerOne}};
     input["teamTwo"] = {rank: rankingTwo, name: teamTwo, goals: goalsTwo, player: {name: playerTwo}};
 
-    console.log(JSON.stringify(input));
-//    let isFilled = inputList.every(input =>
-//        input.value != null || input.value !=""
-//    )
-//    console.log(isFilled);
+    let filled = [];
+    for(let team of Object.values(input)){
 
-//    if(!isFilled){
-//        alert("Please make sure everything is filled");
-//    } else {
+        if(Object.values(team).includes("") || Object.values(team.player).includes("")){
+
+            filled.push(false);
+        }
+
+    }
+
+    console.log(JSON.stringify(input));
+    let isBlank = filled.includes(false);
+    console.log(isBlank);
+
+    if(isBlank){
+       alert("Please make sure everything is filled");
+    } else {
         return input;
-//    }
+    }
 
 
 

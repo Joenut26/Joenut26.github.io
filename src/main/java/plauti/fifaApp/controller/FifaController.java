@@ -20,10 +20,8 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping(path = "/fifaApp")
+@RequestMapping(path = "/fifaPlauti")
 public class FifaController {
-
-
 
     @Autowired
     private final FifaService fifaService;

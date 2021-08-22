@@ -1,9 +1,17 @@
 package plauti.fifaApp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 public class Player {
+
+    public Player(){
+
+    }
+    public Player(final String name){
+        this.name = name;
+    }
 
     private String name;
     private Integer elo;
