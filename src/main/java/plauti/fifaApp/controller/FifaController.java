@@ -11,11 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import plauti.fifaApp.controller.dto.TeamDto;
 import plauti.fifaApp.model.Game;
-import plauti.fifaApp.model.Team;
 import plauti.fifaApp.service.FifaService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -25,6 +21,11 @@ public class FifaController {
 
     @Autowired
     private final FifaService fifaService;
+
+//    @GetMapping
+//    public HashMap<UUID, Game> getGames(){
+//        return Storage.GAME_MAP;
+//    }
 
     @PostMapping("/gameForm")
     public ResponseEntity<Game> recordGame(@RequestBody TeamDto teams){

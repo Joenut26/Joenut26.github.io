@@ -4,7 +4,20 @@ const url = "http://localhost:8080/fifaPlauti";
 
 let teams = [];
 
+httpRequest.onload() = getGames();
 
+
+
+function getGames(){
+    httpRequest.open('GET', url, true);
+
+    httpRequest.setRequestHeader("Content-Type", "application/json");
+    httpRequest.setRequestHeader("Accept", "application/json");
+
+    httpRequest.send();
+
+    console.log('yooo');
+}
 
 function submit(){
     console.log('lmao')
