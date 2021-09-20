@@ -1,5 +1,9 @@
 package plauti.fifaApp.Scraper;
 
+import lombok.Data;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.BufferedReader;
@@ -7,52 +11,42 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 @Configuration
 public class Scraper {
 
     public Scraper() {
+
+        String url = "https://www.fifaindex.com/teams/?name=port&order=desc";
         try {
-            URL url = new URL("https://www.fifaindex.com/teams/?name=port&order=desc");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            Document doc = Jsoup.connect(url).get();
+            Elements ratings = doc.select("[data-title=\"OVR\"]");
+            Elements name = doc.select("[data-title=\"Name\"]");
+            Elements teamName = doc.select("td");
 
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type", "application/json");
+            String[] splitRating = ratings.text().split(" ");
+            ArrayList<String> teamList = new ArrayList<>();
+            name.forEach(team -> teamList.add(team.text()) );
+            ArrayList<String> rateList = new ArrayList<>(Arrays.asList(splitRating));
 
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
 
+            HashMap<Integer, TeamObject> result = new HashMap<>();
+            TeamObject teamObject = new TeamObject();
 
-            int status = connection.getResponseCode();
-            System.out.println(status);
+            if(teamList.size() == rateList.size()){
+                for (int i = 0; i < teamList.size(); i++) {
+                    //result.put(teamList.get(i), rateList.get(i));
+                    teamObject.setTeamRating(rateList.get(i));
+                    teamObject.setTeamName(teamList.get(i));
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                if (inputLine.contains("OVR")) {
-
-                    String[] split = inputLine.split(" title=");
-                    String[] split1 = inputLine.split("</span></td><td data-title=\"Team Rating\">");
-                    if (split.length > 1) {
-                        String team = split[1].split(" FIFA 21")[0];
-                        //content.append(inputLine);
-                        String a = split1[0];
-                        String overall = a.substring(a.length()-2);
-
-                        content.append("Team: " + team + ", Rating: " + overall + ". ");
-                    }
-
+                    result.put(i, teamObject);
+                    System.out.println(teamObject);
+                    //System.out.println("Team: " + teamList.get(i) + ", Rating: " + rateList.get(i));
                 }
-
             }
-            in.close();
-
-            connection.disconnect();
-
-            System.out.println(content);
-            System.out.println(ResponseBuilder.getFullResponse(connection));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,5 +55,11 @@ public class Scraper {
 
     }
 
+    @Data
+    public class TeamObject {
+        public String teamName;
+        public String teamRating;
+
+    }
 
 }
