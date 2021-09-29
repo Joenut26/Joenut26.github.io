@@ -6,13 +6,6 @@ import lombok.Data;
 @Data
 public class Player {
 
-    public Player(){
-
-    }
-    public Player(final String name){
-        this.name = name;
-    }
-
     private String name;
     private Integer elo;
     private Integer gamesPlayed;
@@ -22,5 +15,16 @@ public class Player {
     private Integer gamesWon;
     private Integer gamesLost;
     private Integer gamesDrawn;
+
+    public Player(){
+
+    }
+    public Player(final String name){
+        this.name = name;
+    }
+
+
+
+
 
 }

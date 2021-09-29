@@ -26,7 +26,7 @@ public class Storage {
     private final ArrayList<String[]> PLAYER_DATA = new ArrayList<>();
     private final ArrayList<String[]> TEAM_DATABASE = new ArrayList<>();
     public static HashMap<UUID, Game> gameMap = new HashMap<>();
-    public static ArrayList<Player> playerList = new ArrayList<>();
+    public static HashMap<String,Player> playerList = new HashMap<>();
 
     public Storage() {
 
@@ -66,7 +66,7 @@ public class Storage {
                 player.setGamesLost(Integer.parseInt(line[7]));
                 player.setGamesDrawn(Integer.parseInt(line[8]));
 
-                playerList.add(player);
+                playerList.put(player.getName(), player);
                 System.out.println("Getting player data...");
                 System.out.println(Arrays.toString(line));
 
@@ -102,7 +102,7 @@ public class Storage {
         writeToCSV("src/main/resources/static/storage/GAMESTORAGE.csv", data);
         //clear data
         data.clear();
-        playerList.forEach(player -> {
+        playerList.values().forEach(player -> {
             data.add(new String[]{
                     player.getName(),
                     player.getElo().toString(),

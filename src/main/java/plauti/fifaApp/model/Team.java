@@ -6,6 +6,12 @@ import lombok.Data;
 @Data
 public class Team {
 
+    public enum Status {
+        WON,
+        LOST,
+        DRAW,
+    }
+
     public Team(Integer rank, String name, Integer goals, String player) {
         this.rank = rank;
         this.name = name;
@@ -17,6 +23,8 @@ public class Team {
     private String name;
     private Integer goals;
     private String player;
+    private Status status;
+
 
     public Team() {
 
