@@ -6,26 +6,26 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-@Configuration
+
+@Data
 public class Scraper {
 
-    public Scraper() {
+   //private final String URL = "https://www.fifaindex.com/fifa21_486/?page=";
+    //private final String URL_END = "&order=desc";
 
-        String url = "https://www.fifaindex.com/teams/?name=port&order=desc";
+    public ArrayList<TeamObject> scrapeBySearch(final String url) {
+
+        ArrayList<TeamObject> result = new ArrayList<>();
+
         try {
             Document doc = Jsoup.connect(url).get();
             Elements ratings = doc.select("[data-title=\"OVR\"]");
             Elements name = doc.select("[data-title=\"Name\"]");
-            Elements teamName = doc.select("td");
 
             String[] splitRating = ratings.text().split(" ");
             ArrayList<String> teamList = new ArrayList<>();
@@ -33,18 +33,14 @@ public class Scraper {
             ArrayList<String> rateList = new ArrayList<>(Arrays.asList(splitRating));
 
 
-            HashMap<Integer, TeamObject> result = new HashMap<>();
-            TeamObject teamObject = new TeamObject();
 
             if(teamList.size() == rateList.size()){
                 for (int i = 0; i < teamList.size(); i++) {
+                    TeamObject teamObject = new TeamObject();
                     //result.put(teamList.get(i), rateList.get(i));
                     teamObject.setTeamRating(rateList.get(i));
                     teamObject.setTeamName(teamList.get(i));
-
-                    result.put(i, teamObject);
-                    System.out.println(teamObject);
-                    //System.out.println("Team: " + teamList.get(i) + ", Rating: " + rateList.get(i));
+                    result.add(teamObject);
                 }
             }
 
@@ -52,6 +48,7 @@ public class Scraper {
             e.printStackTrace();
         }
 
+        return result;
 
     }
 
