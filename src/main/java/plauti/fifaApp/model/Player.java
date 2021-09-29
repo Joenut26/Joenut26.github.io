@@ -21,5 +21,6 @@ public class Player {
     private Integer goalsConceded;
     private Integer gamesWon;
     private Integer gamesLost;
+    private Integer gamesDrawn;
 
 }
