@@ -1,6 +1,7 @@
 package plauti.fifaApp.model;
 
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import plauti.fifaApp.Scraper.Scraper;
 
@@ -10,12 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-@Configuration
+
 @Data
 public class Storage {
 
@@ -26,7 +26,7 @@ public class Storage {
     private final ArrayList<String[]> PLAYER_DATA = new ArrayList<>();
     private final ArrayList<String[]> TEAM_DATABASE = new ArrayList<>();
     public static HashMap<UUID, Game> gameMap = new HashMap<>();
-    public static HashMap<String,Player> playerList = new HashMap<>();
+    public static HashMap<String, Player> playerList = new HashMap<>();
 
     public Storage() {
 
@@ -36,19 +36,23 @@ public class Storage {
             PLAYER_DATA.addAll(readCSV("src/main/resources/static/storage/PLAYER_DATA.csv"));
             TEAM_DATABASE.addAll(readCSV("src/main/resources/static/storage/TEAM_DATABASE.csv"));
 
+
             for (String[] line : GAME_DATA) {
 
                 Game game = new Game();
+                if (line.length != 0) {
+                    game.setDate(LocalDate.parse(line[0]));
+                    game.setTeamOne(new Team(Integer.parseInt(line[7]), line[3], Integer.parseInt(line[5]), line[1]));
+                    game.setTeamTwo(new Team(Integer.parseInt(line[8]), line[4], Integer.parseInt(line[6]), line[2]));
+                    UUID gameId = UUID.randomUUID();
 
-                game.setDate(LocalDate.parse(line[0]));
-                game.setTeamOne(new Team(Integer.parseInt(line[7]), line[3], Integer.parseInt(line[5]), line[1]));
-                game.setTeamTwo(new Team(Integer.parseInt(line[8]), line[4], Integer.parseInt(line[6]), line[2]));
-                UUID gameId = UUID.randomUUID();
 
-                gameMap.put(gameId, game);
+                    gameMap.put(gameId, game);
 
-                System.out.println("Getting game data...");
-                System.out.println(Arrays.toString(line));
+
+                    System.out.println("Getting game data...");
+                    System.out.println(Arrays.toString(line));
+                }
 
             }
 
@@ -56,20 +60,21 @@ public class Storage {
 
                 Player player = new Player();
 
-                player.setName(line[0]);
-                player.setElo(Integer.parseInt(line[1]));
-                player.setGamesPlayed(Integer.parseInt(line[2]));
-                player.setPoints(Integer.parseInt(line[3]));
-                player.setGoalsScored(Integer.parseInt(line[4]));
-                player.setGoalsConceded(Integer.parseInt(line[5]));
-                player.setGamesWon(Integer.parseInt(line[6]));
-                player.setGamesLost(Integer.parseInt(line[7]));
-                player.setGamesDrawn(Integer.parseInt(line[8]));
+                if (line.length != 0) {
+                    player.setName(line[0]);
+                    player.setElo(Integer.parseInt(line[1]));
+                    player.setGamesPlayed(Integer.parseInt(line[2]));
+                    player.setPoints(Integer.parseInt(line[3]));
+                    player.setGoalsScored(Integer.parseInt(line[4]));
+                    player.setGoalsConceded(Integer.parseInt(line[5]));
+                    player.setGamesWon(Integer.parseInt(line[6]));
+                    player.setGamesLost(Integer.parseInt(line[7]));
+                    player.setGamesDrawn(Integer.parseInt(line[8]));
 
-                playerList.put(player.getName(), player);
-                System.out.println("Getting player data...");
-                System.out.println(Arrays.toString(line));
-
+                    playerList.put(player.getName(), player);
+                    System.out.println("Getting player data...");
+                    System.out.println(Arrays.toString(line));
+                }
             }
 
             System.out.println("Storage initialization complete");
@@ -98,8 +103,9 @@ public class Storage {
                     game.getTeamOne().getRank().toString(),
                     game.getTeamTwo().getRank().toString()}); //new String[]{teamObject.getTeamName(), teamObject.getTeamRating()}));
         });
-
+        System.out.println("Saving games: In Progress");
         writeToCSV("src/main/resources/static/storage/GAMESTORAGE.csv", data);
+        System.out.println("Saving games: Done");
         //clear data
         data.clear();
         playerList.values().forEach(player -> {
@@ -115,8 +121,9 @@ public class Storage {
                     player.getGamesDrawn().toString()
             });
         });
-
+        System.out.println("Saving players: In Progress");
         writeToCSV("src/main/resources/static/storage/PLAYER_DATA.csv", data);
+        System.out.println("Saving players: Done");
         data.clear();
 
     }

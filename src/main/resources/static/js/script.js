@@ -4,7 +4,7 @@ const url = "http://localhost:8080/fifaPlauti";
 
 let teams = [];
 
-httpRequest.onload() = getGames();
+//httpRequest.onload() = getGames();
 
 
 
@@ -20,7 +20,7 @@ function getGames(){
 }
 
 function submit(){
-    console.log('lmao')
+    console.log('submitting data')
     let gameUrl = url + "/gameForm";
     httpRequest.open('POST', gameUrl, true);
 
@@ -51,8 +51,8 @@ function getInput(){
     let teamTwo = document.getElementById("team2").value;
 
     let input = {};
-    input["teamOne"] = {rank: rankingOne, name: teamOne, goals: goalsOne, player: {name: playerOne}};
-    input["teamTwo"] = {rank: rankingTwo, name: teamTwo, goals: goalsTwo, player: {name: playerTwo}};
+    input["teamOne"] = {rank: rankingOne, name: teamOne, goals: goalsOne, player: playerOne};
+    input["teamTwo"] = {rank: rankingTwo, name: teamTwo, goals: goalsTwo, player: playerTwo};
 
     let filled = [];
     for(let team of Object.values(input)){

@@ -10,6 +10,7 @@ public class Team {
         WON,
         LOST,
         DRAW,
+        UNDEFINED
     }
 
     public Team(Integer rank, String name, Integer goals, String player) {
@@ -17,6 +18,7 @@ public class Team {
         this.name = name;
         this.goals = goals;
         this.player = player;
+        this.status = Status.UNDEFINED;
     }
 
     private Integer rank;

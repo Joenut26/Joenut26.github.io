@@ -9,15 +9,14 @@ import plauti.fifaApp.model.Team;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class FifaService {
 
-    final Storage storage = new Storage();
+    Storage storage = new Storage();
+    private final Integer K_VALUE = 32;
 
     public Game setGame(Team teamOne, Team teamTwo) {
 
@@ -38,80 +37,99 @@ public class FifaService {
         game.setTeamTwo(teamTwo);
         game.setDate(LocalDate.now());
 
+        //check if players exist already
+        checkForPlayers(game);
 
-        //calculations
         //update player stats
-        String player1Name = game.getTeamOne().getPlayer();
-        String player2Name = game.getTeamTwo().getPlayer();
-
-        updatePlayer1(player1Name, game);
-        updatePlayer2(player2Name, game);
+        //calc ELO player 1
+        updatePlayer(game, false);
+        //calc ELO player 2
+        updatePlayer(game, true);
 
         //log game
         Storage.gameMap.put(UUID.randomUUID(), game);
         //update ranking
 
+        saveData();
 
         return game;
 
     }
 
-    private void updatePlayer1(final String playerName, final Game game) {
+    private void checkForPlayers(final Game game) {
+
+        String player1Name = game.getTeamOne().getPlayer();
+        String player2Name = game.getTeamTwo().getPlayer();
+
+        ArrayList<String> playerNames = new ArrayList<>();
+        playerNames.add(player1Name);
+        playerNames.add(player2Name);
 
         //check if players exist, if not make them
-        if (!(Storage.playerList.containsKey(playerName))) {
-            ;
-            Storage.playerList.put(playerName, new Player(playerName));
-        }
-
-        //get player by name
-        Player player = Storage.playerList.get(playerName);
-
-        //update player
-        player.setGamesPlayed(player.getGamesPlayed() + 1);
-        player.setGoalsScored(player.getGoalsScored() + game.getTeamOne().getGoals());
-        player.setGoalsConceded(player.getGoalsConceded() + game.getTeamTwo().getGoals());
-
-        Team.Status status = game.getTeamOne().getStatus();
-        if (status.equals(Team.Status.WON)) {
-            player.setGamesWon(player.getGamesWon() + 1);
-        } else if (status.equals(Team.Status.LOST)) {
-            player.setGamesLost(player.getGamesLost() + 1);
-        } else if (status.equals(Team.Status.DRAW)) {
-            player.setGamesDrawn(player.getGamesDrawn() + 1);
-        }
+        playerNames.forEach(player -> {
+            if (!(Storage.playerList.containsKey(player))) {
+                ;
+                Storage.playerList.put(player, new Player(player));
+            }
+        });
 
     }
 
-    private void updatePlayer2(final String playerName, final Game game) {
+    private void updatePlayer(final Game game, final boolean switched) {
 
-        //check if players exist, if not make them
-        if (!(Storage.playerList.containsKey(playerName))) {
-            Storage.playerList.put(playerName, new Player(playerName));
+        Team playerTeam;
+        Team opponentTeam;
+        Player player;
+        Player opponent;
+
+        if (!switched) {
+            playerTeam = game.getTeamOne();
+            opponentTeam = game.getTeamTwo();
+
+            player = Storage.playerList.get(game.getTeamOne().getPlayer());
+            opponent = Storage.playerList.get(game.getTeamTwo().getPlayer());
+        } else {
+            playerTeam = game.getTeamTwo();
+            opponentTeam = game.getTeamOne();
+
+            player = Storage.playerList.get(game.getTeamTwo().getPlayer());
+            opponent = Storage.playerList.get(game.getTeamOne().getPlayer());
         }
 
-        //get player by name
-        Player player = Storage.playerList.get(playerName);
+        //calculate expected score
+        double deltaE = 100 * ((double) opponent.getElo() / (double) playerTeam.getRank() - (double) player.getElo() / (double) opponentTeam.getRank());
+        System.out.println("deltaE: " + deltaE);
+        double expectedScore = 1 / (1 + Math.exp(deltaE / 500));
+        System.out.println("expected: " + expectedScore);
+        //calculate actual score
+        double deltaA = 100 * ((double) opponentTeam.getGoals() / (double) opponentTeam.getRank() - (double) playerTeam.getGoals() / (double) playerTeam.getRank());
+        System.out.println("deltaA: " + deltaA);
+        double actualScore = 1 / (1 + Math.exp(deltaA / 5));
+        System.out.println("actual: " + actualScore);
 
-        //update player
+
+        //update ELO
+        System.out.println(actualScore - expectedScore);
+        player.setElo(player.getElo() + (int) Math.round(K_VALUE * (actualScore - expectedScore)));
+
         player.setGamesPlayed(player.getGamesPlayed() + 1);
-        player.setGoalsScored(player.getGoalsScored() + game.getTeamTwo().getGoals());
-        player.setGoalsConceded(player.getGoalsConceded() + game.getTeamOne().getGoals());
+        player.setGoalsScored(player.getGoalsScored() + playerTeam.getGoals());
+        player.setGoalsConceded(player.getGoalsConceded() + opponentTeam.getGoals());
 
-        Team.Status status = game.getTeamTwo().getStatus();
+        Team.Status status = playerTeam.getStatus();
         if (status.equals(Team.Status.WON)) {
             player.setGamesWon(player.getGamesWon() + 1);
+            player.setPoints(player.getPoints() + 3);
         } else if (status.equals(Team.Status.LOST)) {
             player.setGamesLost(player.getGamesLost() + 1);
         } else if (status.equals(Team.Status.DRAW)) {
             player.setGamesDrawn(player.getGamesDrawn() + 1);
+            player.setPoints(player.getPoints() + 1);
         }
 
     }
 
     public void saveData() {
-
         Storage.saveData();
-
     }
 }
